@@ -19,6 +19,38 @@ class Solver:
         self.screen_height = pygame.display.Info().current_h - 300
         self.grid_size = self.screen_height / 9
         self.screen = pygame.display.set_mode((self.screen_height, self.screen_height))
+    
+    def check_start_board(self, grid):
+        """
+        Checking correctness of start board
+        """
+        for x_index in range(9):
+            ratio = set()
+            for el in grid[x_index]:
+                if el not in ratio and el != 0:
+                    ratio.add(el)
+                elif el != 0:
+                    return False
+
+        for y_index in range(9):
+            ratio.clear()
+            for i in range(9):
+                if grid[i][y_index] not in ratio and grid[i][y_index] != 0:
+                    ratio.add(grid[i][y_index])
+                elif grid[i][y_index] != 0:
+                    return False
+
+        for start_x in range(0, 9, 3):
+            for start_y in range(0,9, 3):
+                ratio.clear()
+                for i in range(3):
+                    for j in range(3):
+                        num = grid[start_y + i][start_x + j]
+                        if num not in ratio and num != 0:
+                            ratio.add(num)
+                        elif num != 0:
+                            return False
+        return True
 
     def draw_grid(self):
         """
@@ -88,6 +120,9 @@ render(str(grid[y][x]), True, (0, 0, 0))
         """
         Recursively completes the Sudoku grid.
         """
+        if not self.check_start_board(grid):
+            print('There is no solution')
+            
         empty_cells = deque([])
         for y in range(9):
             for x in range(9):
