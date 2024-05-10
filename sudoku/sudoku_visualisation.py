@@ -42,7 +42,7 @@ class Solver:
                     return False
 
         for start_x in range(0, 9, 3):
-            for start_y in range(0,9, 3):
+            for start_y in range(0, 9, 3):
                 ratio.clear()
                 for i in range(3):
                     for j in range(3):
@@ -121,9 +121,6 @@ render(str(grid[y][x]), True, (0, 0, 0))#This line renders the number contained 
         """
         Recursively completes the Sudoku grid.
         """
-        if not self.check_start_board(grid):
-            print('There is no solution')
-            sys.exit()
         empty_cells = deque([])
         for y in range(9):
             for x in range(9):
@@ -148,6 +145,9 @@ render(str(grid[y][x]), True, (0, 0, 0))#This line renders the number contained 
         """
         Solves the Sudoku grid using backtracking.
         """
+        if not self.check_start_board(grid):
+            print('There is no solution')
+            sys.exit()
         running = True
         while running:
             for event in pygame.event.get():
