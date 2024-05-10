@@ -3,6 +3,7 @@ Sudoku
 """
 import pygame
 import sys
+import argparse
 from collections import deque
 from copy import deepcopy
 from sudoku import Sudoku
@@ -19,38 +20,6 @@ class Solver:
         self.screen_height = pygame.display.Info().current_h - 300
         self.grid_size = self.screen_height / 9
         self.screen = pygame.display.set_mode((self.screen_height, self.screen_height))
-    
-    def check_start_board(self, grid):
-        """
-        Checking correctness of start board
-        """
-        for x_index in range(9):
-            ratio = set()
-            for el in grid[x_index]:
-                if el not in ratio and el != 0:
-                    ratio.add(el)
-                elif el != 0:
-                    return False
-
-        for y_index in range(9):
-            ratio.clear()
-            for i in range(9):
-                if grid[i][y_index] not in ratio and grid[i][y_index] != 0:
-                    ratio.add(grid[i][y_index])
-                elif grid[i][y_index] != 0:
-                    return False
-
-        for start_x in range(0, 9, 3):
-            for start_y in range(0,9, 3):
-                ratio.clear()
-                for i in range(3):
-                    for j in range(3):
-                        num = grid[start_y + i][start_x + j]
-                        if num not in ratio and num != 0:
-                            ratio.add(num)
-                        elif num != 0:
-                            return False
-        return True
 
     def draw_grid(self):
         """
@@ -70,12 +39,12 @@ class Solver:
         """
         Draws the numbers of the Sudoku grid on the screen.
         """
+        cell_color = (255, 255, 255)
         for y in range(9):
             for x in range(9):
                 if grid[y][x] != 0:
                     num_text = pygame.font.SysFont(None, 30).\
-render(str(grid[y][x]), True, (0, 0, 0))
-                    cell_color = (255, 255, 255)
+render(str(grid[y][x]), True, (0, 0, 0))#This line renders the number contained in the cell (y, x) of the grid onto the screen using the pygame library. It converts the number to a string, sets the text color to black (0, 0, 0), and renders the text using a system font with size 30.
                     pygame.draw.rect(self.screen, cell_color,
 (x * self.grid_size, y * self.grid_size, self.grid_size, self.grid_size))
                     self.draw_grid()
@@ -120,9 +89,6 @@ render(str(grid[y][x]), True, (0, 0, 0))
         """
         Recursively completes the Sudoku grid.
         """
-        if not self.check_start_board(grid):
-            print('There is no solution')
-            
         empty_cells = deque([])
         for y in range(9):
             for x in range(9):
@@ -158,18 +124,56 @@ render(str(grid[y][x]), True, (0, 0, 0))
             self.draw_numbers(grid)
             pygame.display.flip()
             self.complete(grid)
-        pygame.image.save(self.screen, "sudoku_grid.png")
+            pygame.image.save(self.screen, "sudoku_grid.png")
         pygame.quit()
         sys.exit()
 
-if __name__ == "__main__":
+def solve_sudoku(input_file):
+    sudoku = []
+    with open(input_file, 'r') as f:
+        for line in f.readlines():
+            line = line.strip('\n').split(' ')
+            sudoku.append(line)
+    if len(sudoku) != 9:
+        print("Sudoku grid must contain 9 rows.")
+        sys.exit()
+
+    for row in sudoku:
+        if len(row) != 9:
+            print("Each row in the Sudoku grid must contain 9 digits.")
+            sys.exit()
+
+        for digit in row:
+            if not digit.isdigit() or int(digit) not in range(0,10):
+                print("Sudoku grid must contain only digits from 0 to 9.")
+                sys.exit()
+    for num, row in enumerate(sudoku):
+        for dig_num, digit in enumerate(row):
+            sudoku[num][dig_num] = int(digit)
     solver = Solver()
-    grid = Sudoku(3).difficulty(0.5)
-    # solution = grid.solve()
-    # solution.show()
-    grid = grid.board
-    for line_num, line in enumerate(grid):
-        for el_num, el in enumerate(line):
-            if not el:
-                grid[line_num][el_num] = 0
-    solver.solve(grid)
+    solver.solve(sudoku)
+
+def main():
+    parser = argparse.ArgumentParser(description='Solve a Sudoku puzzle from a file \
+or generate a random one')
+    parser.add_argument('--input_file', type=str, help='Input file containing the Sudoku puzzle ')
+    args = parser.parse_args()
+
+    if args.input_file:
+        solve_sudoku(args.input_file)
+    else:
+        solver = Solver()
+        grid = Sudoku(3).difficulty(0.5)
+        # solution = grid.solve()
+        # solution.show()
+        grid = grid.board
+        for line_num, line in enumerate(grid):
+            for el_num, el in enumerate(line):
+                if not el:
+                    grid[line_num][el_num] = 0
+            print(line)
+        solver.solve(grid)
+
+    print("Sudoku solved")
+if __name__ == "__main__":
+    main()
