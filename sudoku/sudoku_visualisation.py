@@ -130,7 +130,7 @@ render(str(grid[y][x]), True, (0, 0, 0))#This line renders the number contained 
 
 def solve_sudoku(input_file):
     sudoku = []
-    with open(input_file, 'r') as f:
+    with open(input_file, 'r', encoding='utf-8') as f:
         for line in f.readlines():
             line = line.strip('\n').split(' ')
             sudoku.append(line)
