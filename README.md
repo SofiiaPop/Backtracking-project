@@ -38,6 +38,8 @@ Backtracking - це метод розв'язання задач, який вик
 ![Image Alt text](sudoku/sudoku_grid.png "Судоку")
 
 ### Порівняння з py-sudoku у генерації та вирішенні (без візуалізації)
+![Image Alt text](sudoku/output.png "Генерація")
+![Image Alt text](sudoku/output2.png "Вирішення")
 
 ## Лабіринт
 
