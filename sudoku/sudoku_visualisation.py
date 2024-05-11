@@ -7,6 +7,7 @@ import argparse
 from collections import deque
 from copy import deepcopy
 from sudoku import Sudoku
+from sudoku_generation import SudokuGenerator
 
 class Solver:
     """
@@ -25,9 +26,9 @@ class Solver:
         """
         Checking correctness of start board
         """
-        for x_index in range(9):
+        for ind in range(9):
             ratio = set()
-            for el in grid[x_index]:
+            for el in grid[ind]:
                 if el not in ratio and el != 0:
                     ratio.add(el)
                 elif el != 0:
@@ -46,7 +47,7 @@ class Solver:
                 ratio.clear()
                 for i in range(3):
                     for j in range(3):
-                        num = grid[start_y + i][start_x + j]
+                        num = grid[start_x + i][start_y + j]
                         if num not in ratio and num != 0:
                             ratio.add(num)
                         elif num != 0:
@@ -84,7 +85,8 @@ render(str(grid[y][x]), True, (0, 0, 0))#This line renders the number contained 
 2 - num_text.get_width() // 2, y * self.grid_size + self.grid_size \
 // 2 - num_text.get_height() // 2))
 
-    def check_board(self, grid, y_index, x_index, num):
+    @staticmethod
+    def check_board(grid, y_index, x_index, num):
         """
         Checks if a number can be placed in a specific cell on the Sudoku grid.
         """
@@ -110,7 +112,7 @@ render(str(grid[y][x]), True, (0, 0, 0))#This line renders the number contained 
         start_y = (y_index // 3) * 3
         for i in range(3):
             for j in range(3):
-                num = grid_copy[start_y + i][start_x + j]
+                num = grid_copy[start_x + i][start_y + j]
                 if num not in ratio and num != 0:
                     ratio.add(num)
                 elif num != 0:
@@ -192,16 +194,32 @@ def main():
     parser = argparse.ArgumentParser(description='Solve a Sudoku puzzle from a file \
 or generate a random one')
     parser.add_argument('--input_file', type=str, help='Input file containing the Sudoku puzzle ')
+    parser.add_argument('--choose_generation', type=str, help="Type 'sudoku_module' to generate \
+sudoku from py-sudoku and 'own_implementation' to try created generation")
+    parser.add_argument('--difficulty', type=float, help='Input file containing the Sudoku puzzle ')
     args = parser.parse_args()
 
     if args.input_file:
         solve_sudoku(args.input_file)
-    else:
+    elif args.choose_generation == 'sudoku_module':
         solver = Solver()
-        grid = Sudoku(3).difficulty(0.5)
+        if not args.difficulty:
+            args.difficulty = 0.5
+        grid = Sudoku(3).difficulty(args.difficulty)
         # solution = grid.solve()
         # solution.show()
         grid = grid.board
+        for line_num, line in enumerate(grid):
+            for el_num, el in enumerate(line):
+                if not el:
+                    grid[line_num][el_num] = 0
+            print(line)
+        solver.solve(grid)
+    elif args.choose_generation == 'own_implementation':
+        generator = SudokuGenerator(args.difficulty)
+        generator.generate_sudoku()
+        solver = Solver()
+        grid = generator.grid
         for line_num, line in enumerate(grid):
             for el_num, el in enumerate(line):
                 if not el:
