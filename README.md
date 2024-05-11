@@ -35,7 +35,7 @@ Backtracking - це метод розв'язання задач, який вик
 
 ### Приклад візуалізації
 
-![image][sudoku/sudoku_grid.png]
+![Image Alt text][sudoku/sudoku_grid.png]
 
 ## Лабіринт
 
