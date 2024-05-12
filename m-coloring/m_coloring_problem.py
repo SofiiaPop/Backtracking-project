@@ -2,7 +2,7 @@
 
 import pygame
 import numpy as np
-from generation import generate_adjacency_matrix
+from generation_matrix import generate_adjacency_matrix
 
 with open('palette.txt', 'r', encoding='utf-8') as file:
     NODE_COLORS = [line.strip() for line in file]
@@ -13,9 +13,12 @@ with open('palette.txt', 'r', encoding='utf-8') as file:
 
 class Graph():
     '''Graph class'''
-    def __init__(self):
+    def __init__(self, graph=None):
         '''Initializes the graph with the number of verticles and an adjacency matrix.'''
-        self.graph = generate_adjacency_matrix()
+        if graph is not None:
+            self.graph = graph
+        else:
+            self.graph = generate_adjacency_matrix()
         self.verticles = len(self.graph)
 
     def is_safe(self, v, colour, c):
@@ -67,7 +70,7 @@ class Graph():
 
         for i in range(self.verticles):
             pygame.draw.circle(screen, NODE_COLORS[colors[i] - 1], node_positions[i], 20)
-            text = font.render(str(i), True, (255, 255, 255))
+            text = font.render(str(i), True, (0, 0, 0))
             text_rect = text.get_rect(center=node_positions[i])
             screen.blit(text, text_rect)
 
@@ -95,4 +98,8 @@ def main():
     if colours != 'Solution does not exist! \nNo colours are assigned.':
         g.visualize_graph(colours)
 
-main()
+# with open('matrix_1.txt', 'r', encoding='utf-8') as file:
+#     matrix = [[int(num.rstrip(',')) for num in line.split()] for line in file]
+
+if __name__ == '__main__':
+    main()
