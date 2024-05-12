@@ -1,7 +1,11 @@
 '''M-coloring problem'''
 
-import networkx as nx
-import matplotlib.pyplot as plt
+import pygame
+import numpy as np
+from generation import generate_adjacency_matrix
+
+with open('palette.txt', 'r', encoding='utf-8') as file:
+    NODE_COLORS = [line.strip() for line in file]
 
 # Given an undirected graph and a number m, the task is to color
 # the given graph with at most m colors such that no two adjacent
@@ -9,44 +13,10 @@ import matplotlib.pyplot as plt
 
 class Graph():
     '''Graph class'''
-    def __init__(self, verticles):
+    def __init__(self):
         '''Initializes the graph with the number of verticles and an adjacency matrix.'''
-        self.verticles = verticles
-        self.graph = [[0 for _ in range(verticles)] for _ in range(verticles)]
-
-    def verify_input(self, v, y, m):
-        '''Verifies the input.'''
-        if not v.isdigit():
-            print('The number of verticles must be an integer!')
-            return False
-        if int(v) <= 0:
-            print('The number of verticles must be a positive integer!')
-            return False
-        if not m.isdigit():
-            print('The number of colours must be an integer!')
-            return False
-        if int(m) <= 0:
-            print('The number of colours must be a positive integer!')
-            return False
-        if int(m) > int(v):
-            print('The number of colours must be less \
-or equal to the number of verticles!')
-            return False
-        y = y.split()
-        if len(y) != int(v):
-            print('The adjacency matrix must have the same number \
-of rows as the number of verticles!')
-            return False
-        for el in y:
-            if len(el) != int(v):
-                print('The adjacency matrix must have the same number \
-of columns as the number of verticles!')
-                return False
-            for c in el:
-                if c not in ['0', '1']:
-                    print('The adjacency matrix must contain only 0s and 1s!')
-                    return False
-        return True
+        self.graph = generate_adjacency_matrix()
+        self.verticles = len(self.graph)
 
     def is_safe(self, v, colour, c):
         '''Checks if the colour c can be assigned to the vertice.'''
@@ -77,47 +47,48 @@ of columns as the number of verticles!')
         print('Solution exists! The colours assigned to the verticles are: ')
         return colour
 
-    def visualize_graph(self, colour):
-        '''Visualizes the graph with assigned colours.'''
-        g = nx.Graph()
+    def visualize_graph(self, colors):
+        '''Visualizes the graph with assigned colors using Pygame.'''
+        pygame.init()
+        screen = pygame.display.set_mode((800, 600))
+        font = pygame.font.SysFont(None, 20)
+
+        node_positions = {}
+        for i in range(self.verticles):
+            angle = i * (2 * np.pi / self.verticles)
+            x = int(800 / 2 + 200 * np.cos(angle))
+            y = int(600 / 2 + 200 * np.sin(angle))
+            node_positions[i] = (x, y)
+
         for i in range(self.verticles):
             for j in range(i+1, self.verticles):
                 if self.graph[i][j] == 1:
-                    g.add_edge(i, j)
+                    pygame.draw.line(screen, (255, 255, 255), node_positions[i], node_positions[j], 2)
 
-        pos = nx.spring_layout(g)
-        nx.draw_networkx_nodes(g, pos)
-        nx.draw_networkx_edges(g, pos)
-        nx.draw_networkx_labels(g, pos)
+        for i in range(self.verticles):
+            pygame.draw.circle(screen, NODE_COLORS[colors[i] - 1], node_positions[i], 20)
+            text = font.render(str(i), True, (255, 255, 255))
+            text_rect = text.get_rect(center=node_positions[i])
+            screen.blit(text, text_rect)
 
-        color_map = []
-        with open('palette.txt', 'r', encoding='utf-8') as f:
-            custom_palette = f.read().split('\n')
-        for c in colour:
-            if c == 0:
-                color_map.append('gray')
-            else:
-                color_map.append(custom_palette[c % len(custom_palette)])
-        nx.draw_networkx_nodes(g, pos, node_color=color_map)
+        pygame.display.flip()
+        pygame.time.delay(1000)
 
-        plt.axis("off")
-        plt.show()
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+        pygame.quit()
 
 def main():
     '''Main function'''
-    v = input('Enter the number of verticles: ')
-    y = input("Enter the adjacency matrix \n(eg. '0111 1010 1101 1010'): ")
-    m = input('Enter the number of colours: ')
-    g = Graph(int(v))
-    if not g.verify_input(v, y, m):
-        return
-    m = int(m)
-    y = y.split()
-    for i, el in enumerate(y):
-        g.graph[i] = list(map(int, el))
+    g = Graph()
     print('The graph is: ')
     for i in range(g.verticles):
         print(g.graph[i])
+    m = int(input('Enter the number of colours: '))
     colours = g.graph_colouring(m)
     for c in colours:
         print(c, end=' ')
