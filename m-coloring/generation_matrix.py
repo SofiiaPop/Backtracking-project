@@ -2,9 +2,12 @@
 
 import random
 
-def generate_adjacency_matrix():
+def generate_adjacency_matrix(vertices=None):
     '''Generates a random adjacency matrix for a graph'''
-    num_nodes = random.randint(2, 20)
+    if vertices:
+        num_nodes = vertices
+    else:
+        num_nodes = random.randint(2, 30)
     num_edges = random.randint(1, num_nodes * (num_nodes - 1) // 2)
 
     adjacency_matrix = [[0] * num_nodes for _ in range(num_nodes)]

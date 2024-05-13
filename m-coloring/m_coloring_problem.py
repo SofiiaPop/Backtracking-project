@@ -1,5 +1,6 @@
 '''M-coloring problem'''
 
+import argparse
 import pygame
 import numpy as np
 from generation_matrix import generate_adjacency_matrix
@@ -13,12 +14,9 @@ with open('palette.txt', 'r', encoding='utf-8') as file:
 
 class Graph():
     '''Graph class'''
-    def __init__(self, graph=None):
+    def __init__(self, verticles=None):
         '''Initializes the graph with the number of verticles and an adjacency matrix.'''
-        if graph is not None:
-            self.graph = graph
-        else:
-            self.graph = generate_adjacency_matrix()
+        self.graph = generate_adjacency_matrix(verticles)
         self.verticles = len(self.graph)
 
     def is_safe(self, v, colour, c):
@@ -87,11 +85,20 @@ class Graph():
 
 def main():
     '''Main function'''
-    g = Graph()
+    parser = argparse.ArgumentParser(description='Solve the M-coloring problem.')
+    parser.add_argument('-c', '--colors', type=int, required=True, help='Number of colors to use')
+    parser.add_argument('-v', '--vertices', type=int, nargs='?', help='Number of vertices in the graph')
+    args = parser.parse_args()
+
+    if args.vertices is not None:
+        g = Graph(args.vertices)
+    else:
+        g = Graph()
+
     print('The graph is: ')
     for i in range(g.verticles):
         print(g.graph[i])
-    m = int(input('Enter the number of colours: '))
+    m = args.colors
     colours = g.graph_colouring(m)
     for c in colours:
         print(c, end=' ')
