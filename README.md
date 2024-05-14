@@ -139,21 +139,26 @@ Backtracking - це метод розв'язання задач, який вик
 ### Реалізація
 ### 1. solve_crossword.py
 Сама програма розв'язування кросвордів, отримує кросворд та слова що потрібно знайти на вхід від головного модуля main.py
+
 ![image](https://github.com/SofiiaPop/Backtracking-project/assets/149361945/f9f1b9f3-45c4-4a37-943d-6191aaf36f4e)
 
 Принцип роботи:
 пошук першої букви слова, далі рекурсія вниз або вправо, перевірка чи слово підходить, повернення координат першої букви
+
 ![image](https://github.com/SofiiaPop/Backtracking-project/assets/149361945/6a668b44-bc6e-4d91-a944-39b194454a52)
 
 ### 2. generate_crossword.py
 Генератор кросвордів,
 в основі лежить просто рандомне розміщення слів в сітці
+
 ![Screenshot from 2024-05-14 09-37-44](https://github.com/SofiiaPop/Backtracking-project/assets/149361945/563a05fd-59de-418c-b1fb-d299e2ebd6fd)
 
 потім заповнення пропусків іншими буквами
+
 ![Screenshot from 2024-05-14 09-38-23](https://github.com/SofiiaPop/Backtracking-project/assets/149361945/6f44138a-11ad-4644-b616-269a26931b71)
 
 ### 3. main.py
+
 ![Screenshot from 2024-05-14 09-38-06](https://github.com/SofiiaPop/Backtracking-project/assets/149361945/f240dcfe-02e7-462b-8943-e939da294432)
 
 Модуль що запускає решту. Присутній argparse для простішого використання, приймає кількість слів з яких потрібно генерувати кросворд, та шлях до словника(default.txt).
