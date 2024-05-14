@@ -1,3 +1,4 @@
+"""module that creates crossword"""
 import random
 
 def can_place_word(crossword_grid, word, row, col, direction):
@@ -5,25 +6,25 @@ def can_place_word(crossword_grid, word, row, col, direction):
         # Перевірка чи може слово поміститися горизонтально
         if col + len(word) > len(crossword_grid):
             return False
-        for i in range(len(word)):
-            if crossword_grid[row][col+i] != ' ' and crossword_grid[row][col+i] != word[i]:
+        for i, val in enumerate(word):
+            if crossword_grid[row][col+i] != ' ' and crossword_grid[row][col+i] != val:
                 return False
     elif direction == 'vertical':
         # Перевірка чи може слово поміститися вертикально
         if row + len(word) > len(crossword_grid):
             return False
-        for i in range(len(word)):
-            if crossword_grid[row+i][col] != ' ' and crossword_grid[row+i][col] != word[i]:
+        for i, val in enumerate(word):
+            if crossword_grid[row+i][col] != ' ' and crossword_grid[row+i][col] != val:
                 return False
     return True
 
 def place_word(crossword_grid, word, row, col, direction):
     if direction == 'horizontal':
-        for i in range(len(word)):
-            crossword_grid[row][col+i] = word[i]
+        for i, val in enumerate(word):
+            crossword_grid[row][col+i] = val
     elif direction == 'vertical':
-        for i in range(len(word)):
-            crossword_grid[row+i][col] = word[i]
+        for i, val in enumerate(word):
+            crossword_grid[row+i][col] = val
 
 def generate_crossword(words):
     random.shuffle(words)
