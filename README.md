@@ -187,3 +187,9 @@ python m_coloring_problem.py -c 2 -v 5
 ## Приклад візуалізації:
 
 ![alt text](images/image.png) ![alt text](images/image-2.png)
+
+# Розподіл роботи
+- Попенюк Софія -- Судоку
+- Гринда Юліана -- Лабіринт
+- Сазонова Вероніка -- m-coloring
+- Стецюк Констянтин -- Кросворд
